@@ -3,17 +3,39 @@ import Cookies from "universal-cookie";
 import axios from "axios";
 import signInImage from "../assets/signup.jpg";
 
+const cookies=new Cookies()
+
+
+const initialState={
+  fullName:'',
+  userName:'',
+  phoneNumber:'',
+  avatarURL:'',
+  password:'',
+  confirmPassword:''
+}
+
 function Auth() {
+  
+    const [form,setForm]=useState(initialState)
   const [isSignup, setIsSignup] = useState(true);
-  const handleChange = () => {};
+  const handleChange = (e) => {
+  setForm({...form,[e.target.name]:e.target.value})
+  };
   const switchMode = () => {
     setIsSignup((prevIsSignup) => !prevIsSignup);
   };
+  const handleSubmit=async (e)=>{
+    e.preventDefault()
+    const {fullName,userName,password,phoneNumber,avatarURL}=form
+    const URL='http://localhost:5000/auth'
+    const {data:{token,userId,hashedPassword}}=await axios.post(`${URL}/${isSignup ?'signup' :'login'}`,{fullName,userName,password,phoneNumber,avatarURL})
+  }
   return (
     <div className="auth__form-container">
       <div className="auth__form-container_fields">
         <div className="auth__form-container_fields-content">
-          <form onSubmit={() => {}}>
+          <form onSubmit={handleSubmit}>
             <p>{isSignup ? "Sign Up" : "Sign In"}</p>
             {isSignup && (
               <div className="auth__form-container_fields-content_input">
@@ -21,7 +43,7 @@ function Auth() {
                 <input
                   name="fullName"
                   type="text"
-                  placeHolder="full Name"
+                  placeholder="full Name"
                   onChange={handleChange}
                   required
                 />
@@ -32,7 +54,7 @@ function Auth() {
               <input
                 name="userName"
                 type="text"
-                placeHolder="user Name"
+                placeholder="user Name"
                 onChange={handleChange}
                 required
               />
@@ -44,7 +66,7 @@ function Auth() {
                 <input
                   name="phoneNumber"
                   type="text"
-                  placeHolder="phone Number"
+                  placeholder="phone Number"
                   onChange={handleChange}
                   required
                 />
@@ -56,7 +78,7 @@ function Auth() {
                 <input
                   name="avatarURL"
                   type="text"
-                  placeHolder="Avatar URL"
+                  placeholder="Avatar URL"
                   onChange={handleChange}
                   required
                 />
@@ -67,7 +89,7 @@ function Auth() {
               <input
                 name="password"
                 type="password"
-                placeHolder="password"
+                placeholder="password"
                 onChange={handleChange}
                 required
               />
@@ -79,12 +101,15 @@ function Auth() {
                 <input
                   name="confirmPassword"
                   type="confirmPassword"
-                  placeHolder="password"
+                  placeholder="password"
                   onChange={handleChange}
                   required
                 />
               </div>
             )}
+            <div className="auth__form-container_fields-content_button">
+                <button>{isSignup? "sign Up" : "signIn"}</button>
+            </div>
           </form>
           <div className="auth__form-container_fields-account">
             <p>
