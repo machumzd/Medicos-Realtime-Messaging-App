@@ -14,4 +14,5 @@ app.get('/',(req,res)=>{
 })
 
 app.use('/auth',authRoutes)
+
 app.listen(PORT,()=>console.log(`server running  on port ${PORT}`))

@@ -31,7 +31,7 @@ function ChannelSearch() {
           placeholder="search"
           type="text"
           value={query}
-          ohChange={onSearch}
+          onChange={onSearch}
         />
       </div>
     </div>

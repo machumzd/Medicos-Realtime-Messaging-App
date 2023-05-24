@@ -1,7 +1,9 @@
+require('dotenv').config()
 const {connect}=require("getstream")
 const bcrypt=require('bcrypt')
-const StreamChat=require("stream-chat")
+const StreamChat=require("stream-chat").StreamChat
 const crypto=require("crypto")
+
 
 const api_key=process.env.STREAM_API_KEY
 const api_secret=process.env.STREAM_API_SECRET
@@ -14,7 +16,7 @@ const signup=async (req,res)=>{
         const serverClient=connect(api_key,api_secret,app_id)
         const hashedPassword=await bcrypt.hash(password,10)
         const token=serverClient.createUserToken(userId)
-        res.status(200).json({token,fullName,userName,phoneNumber,hashedPassword})
+        res.status(200).json({token,fullName,userName,userId,phoneNumber,hashedPassword})
     }
     catch{
 console.log(error)
@@ -34,13 +36,14 @@ const login=async (req,res)=>{
          const success= await bcrypt.compare(password,users[o].hashedPassword)
          const token=serverClient.createUserToken(users[0].id)
         if(success){
+        console.log("id in backend"+users[0].id)
             res.status(200).json({token,fullName:users[0].fullName,userName,userId:users[0].id})
         }else{
             res.status(500).json({message:"incorrect password"})
          }
     }
     catch{
-console.log(error)
+console.log("this is the error from backend"+error)
 res.status(500).json({message:error})
     }
 }
